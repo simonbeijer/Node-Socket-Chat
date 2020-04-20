@@ -1,0 +1,25 @@
+{
+  "name": "node-socket-chat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simonbeijer/Node-Socket-Chat.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/simonbeijer/Node-Socket-Chat/issues"
+  },
+  "homepage": "https://github.com/simonbeijer/Node-Socket-Chat#readme",
+  "dependencies": {
+    "chalk": "^4.0.0",
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}
