@@ -1,7 +1,31 @@
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
+const chalk = require('chalk')
 const io = require('socket.io')(http)
+
+
+const server = [{
+    running: 'Server is running!',
+    port: 3000,
+}]
+
+app.use(express.static(__dirname + '/public'))
+
+
+io.on('connection', (socket) => {
+    console.log('User connected')
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected')
+    })
+})
+
+
+
+
+
+
 
 // Server listen
 http.listen(3000, 'localhost', () => {
