@@ -1,0 +1,24 @@
+@import url("https://fonts.googleapis.com/css?family=Cabin&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background-image: url("./assets/chatbubbles.png");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: #222629;
+  font-family: "Cabin", sans-serif;
+}
+
+/*
+colors
+#61892F /green
+#86c232 /lime
+#222629 /dark gray
+#474B4F / medium gray
+#6B6E70 / light gray
+*/

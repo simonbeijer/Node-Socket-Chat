@@ -10,7 +10,7 @@ const server = [{
     port: 3000,
 }]
 
-app.use(express.static(__dirname + '/public'))
+
 
 
 io.on('connection', (socket) => {
