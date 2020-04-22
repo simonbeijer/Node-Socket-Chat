@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
+import io from 'socket.io-client';
+import Login from './components/login'
+
 
 const App = () => {
+  const socket = io('http://localhost:3000');
+  const [showLogin, setShowLogin] = useState(true)
+
+  const hideLogin = () => {
+    setShowLogin(false)
+  }
+
   const useStyles = createUseStyles({
     appContainer: {
       height: "100vh",
@@ -69,27 +79,43 @@ const App = () => {
   });
   const classes = useStyles();
 
+
+  function getName(name) {
+    console.log(name)
+  }
+
   return (
-    <div className={classes.appContainer}>
-      <ul id="messages" className={classes.messagesList}>
-        <li className={classes.li}>
-          <p style={{ fontWeight: "bold" }}>Simon:</p>
-          <p>Jonathan, jag älskar dig av hela mitt hjärta</p>
-        </li>
-        <li className={classes.li}>
-          <p style={{ fontWeight: "bold" }}>Jonathan:</p>
-          <p>Jag är ledsen, jag ville bara ha din kropp</p>
-        </li>
-        <li className={classes.li}>
-          <p style={{ fontWeight: "bold" }}>Simon:</p>
-          <p>Left the conversation...</p>
-        </li>
-      </ul>
-      <div className={classes.form}>
-        <input className={classes.input} autoComplete="off" />
-        <button className={classes.button}>Send</button>
-      </div>
+
+    <div className={classes.appContainer} >
+      {showLogin && (
+        <Login getName={getName} hideLogin={hideLogin} />
+      )}
+      {!showLogin && (
+        <>
+          <ul id="messages" className={classes.messagesList} >
+            <li className={classes.li}>
+              <p style={{ fontWeight: "bold" }}>Simon:</p>
+              <p>Jonathan, jag älskar dig av hela mitt hjärta</p>
+            </li>
+            <li className={classes.li}>
+              <p style={{ fontWeight: "bold" }}>Jonathan:</p>
+              <p>Jag är ledsen, jag ville bara ha din kropp</p>
+            </li>
+            <li className={classes.li}>
+              <p style={{ fontWeight: "bold" }}>Simon:</p>
+              <p>Left the conversation...</p>
+            </li>
+          </ul>
+          <div className={classes.form}>
+            <input className={classes.input} autoComplete="off" />
+            <button className={classes.button}>Send</button>
+          </div>
+        </>
+      )}
+
+
     </div>
+
   );
 };
 

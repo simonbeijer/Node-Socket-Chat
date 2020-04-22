@@ -4,13 +4,10 @@ const http = require('http').createServer(app);
 const chalk = require('chalk')
 const io = require('socket.io')(http)
 
-
 const server = [{
     running: 'Server is running!',
     port: 3000,
 }]
-
-
 
 
 io.on('connection', (socket) => {
@@ -22,16 +19,10 @@ io.on('connection', (socket) => {
 })
 
 
-
-
-
-
-
 // Server listen
 http.listen(3000, 'localhost', () => {
     portRuninng()
 });
-
 
 
 // Styled cli
