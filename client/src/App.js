@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
 import io from 'socket.io-client';
 import Login from './components/login'
+import { ServerProvider, ServerConsumer } from './context/ServerContext'
 
 
 const App = () => {
@@ -85,37 +86,41 @@ const App = () => {
   }
 
   return (
+    <ServerProvider>
+      {/* <ServerConsumer> */}
 
-    <div className={classes.appContainer} >
-      {showLogin && (
-        <Login getName={getName} hideLogin={hideLogin} />
-      )}
-      {!showLogin && (
-        <>
-          <ul id="messages" className={classes.messagesList} >
-            <li className={classes.li}>
-              <p style={{ fontWeight: "bold" }}>Simon:</p>
-              <p>Jonathan, jag älskar dig av hela mitt hjärta</p>
-            </li>
-            <li className={classes.li}>
-              <p style={{ fontWeight: "bold" }}>Jonathan:</p>
-              <p>Jag är ledsen, jag ville bara ha din kropp</p>
-            </li>
-            <li className={classes.li}>
-              <p style={{ fontWeight: "bold" }}>Simon:</p>
-              <p>Left the conversation...</p>
-            </li>
-          </ul>
-          <div className={classes.form}>
-            <input className={classes.input} autoComplete="off" />
-            <button className={classes.button}>Send</button>
-          </div>
-        </>
-      )}
+        <div className={classes.appContainer} >
+          {showLogin && (
+            <Login getName={getName} hideLogin={hideLogin} />
+          )}
+          {!showLogin && (
+            <>
+              <ul id="messages" className={classes.messagesList} >
+                <li className={classes.li}>
+                  <p style={{ fontWeight: "bold" }}>Simon:</p>
+                  <p>Jonathan, jag älskar dig av hela mitt hjärta</p>
+                </li>
+                <li className={classes.li}>
+                  <p style={{ fontWeight: "bold" }}>Jonathan:</p>
+                  <p>Jag är ledsen, jag ville bara ha din slangformade kroppsdel</p>
+                </li>
+                <li className={classes.li}>
+                  <p style={{ fontWeight: "bold" }}>Simon:</p>
+                  <p>Left the conversation...</p>
+                </li>
+              </ul>
+              <div className={classes.form}>
+                <input className={classes.input} autoComplete="off" />
+                <button className={classes.button}>Send</button>
+              </div>
+            </>
+          )}
 
 
-    </div>
+        </div>
+      {/* </ServerConsumer> */}
 
+    </ServerProvider>
   );
 };
 
