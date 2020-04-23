@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
-import io from 'socket.io-client';
 import Login from './components/login'
-import { ServerProvider, ServerConsumer } from './context/ServerContext'
+import { SocketContext } from "./context/SocketContext";
 
 
 const App = () => {
-  const socket = io('http://localhost:3000');
+
   const [showLogin, setShowLogin] = useState(true)
 
   const hideLogin = () => {
@@ -18,7 +17,7 @@ const App = () => {
       height: "100vh",
       overflow: "scroll",
       display: "flex",
-      justifyContent: "center",
+      justifyContent: "center", 
     },
     messagesList: {
       width: "60%",
@@ -50,7 +49,7 @@ const App = () => {
       borderRadius: "10px",
       backgroundColor: "#6B6E70",
       "&:focus": {
-        border: "4px solid #86C232",
+        border: "4px solid #8bb353",
         borderRadius: "10px",
         backgroundColor: "#FeFeFe",
         outline: "none",
@@ -59,7 +58,7 @@ const App = () => {
     button: {
       width: "15%",
       height: "74%",
-      backgroundColor: "#86C232",
+      backgroundColor: "#8bb353",
       borderRadius: "10px",
       border: "none",
       color: "#222629",
@@ -70,7 +69,7 @@ const App = () => {
       },
     },
     li: {
-      background: "#86C232",
+      background: "#8bb353",
       padding: "2rem",
       borderRadius: "15px",
       marginBottom: "2rem",
@@ -86,41 +85,36 @@ const App = () => {
   }
 
   return (
-    <ServerProvider>
-      {/* <ServerConsumer> */}
+    <SocketContext.Provider value="Jonathan">
+      <div className={classes.appContainer} >
+        {showLogin && (
+          <Login getName={getName} hideLogin={hideLogin} />
 
-        <div className={classes.appContainer} >
-          {showLogin && (
-            <Login getName={getName} hideLogin={hideLogin} />
-          )}
-          {!showLogin && (
-            <>
-              <ul id="messages" className={classes.messagesList} >
-                <li className={classes.li}>
-                  <p style={{ fontWeight: "bold" }}>Simon:</p>
-                  <p>Jonathan, jag älskar dig av hela mitt hjärta</p>
-                </li>
-                <li className={classes.li}>
-                  <p style={{ fontWeight: "bold" }}>Jonathan:</p>
-                  <p>Jag är ledsen, jag ville bara ha din slangformade kroppsdel</p>
-                </li>
-                <li className={classes.li}>
-                  <p style={{ fontWeight: "bold" }}>Simon:</p>
-                  <p>Left the conversation...</p>
-                </li>
-              </ul>
-              <div className={classes.form}>
-                <input className={classes.input} autoComplete="off" />
-                <button className={classes.button}>Send</button>
-              </div>
-            </>
-          )}
-
-
-        </div>
-      {/* </ServerConsumer> */}
-
-    </ServerProvider>
+        )}
+        {!showLogin && (
+          <>
+            <ul id="messages" className={classes.messagesList} >
+              <li className={classes.li}>
+                <p style={{ fontWeight: "bold" }}>Simon:</p>
+                <p>Jonathan, jag älskar dig av hela mitt hjärta</p>
+              </li>
+              <li className={classes.li}>
+                <p style={{ fontWeight: "bold" }}>Jonathan:</p>
+                <p>Jag är ledsen, jag ville bara ha din slangformade kroppsdel</p>
+              </li>
+              <li className={classes.li}>
+                <p style={{ fontWeight: "bold" }}>Simon:</p>
+                <p>Left the conversation...</p>
+              </li>
+            </ul>
+            <div className={classes.form}>
+              <input className={classes.input} autoComplete="off" />
+              <button className={classes.button}>Send</button>
+            </div>
+          </>
+        )}
+      </div>
+    </SocketContext.Provider>
   );
 };
 

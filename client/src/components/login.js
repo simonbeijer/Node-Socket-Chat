@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { createUseStyles } from "react-jss";
+import { SocketContext } from '../context/SocketContext'
 
 
 const Login = (props) => {
+    const test = useContext(SocketContext);
     const [name, setName] = useState("")
     const useStyles = createUseStyles(
         {
@@ -54,6 +56,7 @@ const Login = (props) => {
 
     return (
         <div className={classes.login}>
+            {console.log(test)}
             <form className={classes.form}>
                 <input onChange={handleChange} name="name" className={classes.input} type="text" placeholder="Input your name..." />
                 <button type="submit" className={classes.button} onClick={submitLogin}>Login</button>
