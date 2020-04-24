@@ -12,7 +12,6 @@
 
 // app.use(router);
 
-
 // const serverPort = [{
 //     running: 'Server is running!',
 //     port: process.env.PORT || 5000,
@@ -34,7 +33,6 @@
 // server.listen(serverPort.port, () =>
 //     portRunning()
 // );
-
 
 // // Styled cli
 // function portRunning() {
@@ -64,32 +62,39 @@ const router = require("./router");
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
-const _ = require('lodash');
-
+const _ = require("lodash");
 
 app.use(router);
 
-
-let allRooms = []
-let users = []
+let allRooms = [];
+let allUsers = [];
 
 io.on("connection", (socket) => {
   console.log("user connected");
 
   socket.on("join", ({ name, room, id, password }) => {
     socket.join(room, () => {
-      users.push({ room, name })
-      // console.log(users);
+      allUsers.push({ room, name });
+      let users = [];
+      for (let i of allUsers) {
+        if (i.room === room) {
+          users.push(i.name);
+        }
+      }
 
-      allRooms.push({ roomName: room, id, password })
-      let availableRooms = _.uniqBy(allRooms, 'roomName')
-      io.to(room).emit("room-message", { availableRooms, name, message: "has joined the room" });
-      io.to(room).emit("users", users)
-    })
+      allRooms.push({ roomName: room, id, password });
+      let availableRooms = _.uniqBy(allRooms, "roomName");
+      io.to(room).emit("room-message", {
+        availableRooms,
+        name,
+        message: "has joined the room",
+      });
+      io.to(room).emit("users", users);
+    });
 
     socket.on("chat-message", (message) => {
-      io.to(room).emit("chat-message", { message, name })
-    })
+      io.to(room).emit("chat-message", { message, name });
+    });
   });
 
   socket.on("disconnect", () => {
@@ -100,6 +105,3 @@ io.on("connection", (socket) => {
 server.listen(port, () =>
   console.log(`Server is up an runing on port: ${port}`)
 );
-
-
-
