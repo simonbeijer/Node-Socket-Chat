@@ -12,7 +12,6 @@ const Room = (props) => {
         <div>
             <h1>Rooms</h1>
             <ul>{roomArray}</ul>
-            {console.log(props.rooms)}
         </div>
     )
 }

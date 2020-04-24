@@ -3,11 +3,13 @@ import queryString from "query-string";
 import io from "socket.io-client";
 import Room from "../Room/Room";
 
+
 import "./chat.css";
 
 let socket;
 
 const Chat = ({ location }) => {
+
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
   const [messages, setMessages] = useState([])
@@ -35,8 +37,12 @@ const Chat = ({ location }) => {
 
   useEffect(() => {
     socket.on('room-message', (data) => {
-      setMessages([{ ...messages, name: data.name, message: data.message }])
-      setAvailableRooms(data.distinctRooms)
+      let x = {
+        name: data.name,
+        message: data.message
+      }
+      setMessages([...messages, x])
+      setAvailableRooms(data.availableRooms)
     })
   })
 
@@ -45,6 +51,13 @@ const Chat = ({ location }) => {
       setMessages([...messages, data])
     })
   })
+
+  // useEffect(() => {
+  //   socket.on('users', (users) => {
+
+
+  //   })
+  // })
 
 
   let nr = 1
@@ -74,6 +87,7 @@ const Chat = ({ location }) => {
         <button onClick={sendMessage}>Send</button>
       </div>
       <Room rooms={availableRooms} />
+      <div>Roomname: {room}</div>
     </div>
   );
 };

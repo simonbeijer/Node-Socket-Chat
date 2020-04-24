@@ -64,24 +64,27 @@ const router = require("./router");
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
+const _ = require('lodash');
+
 
 app.use(router);
 
-let availableRooms = []
+
+let allRooms = []
+let users = []
 
 io.on("connection", (socket) => {
   console.log("user connected");
 
   socket.on("join", ({ name, room, id, password }) => {
     socket.join(room, () => {
+      users.push({ room, name })
+      // console.log(users);
 
-      availableRooms.push(room)
-      const distinctRooms = [...new Set(availableRooms.map(room => room))]
-      console.log(distinctRooms)
-      if (distinctRooms === room) {
-
-      }
-      io.to(room).emit("room-message", { distinctRooms, name, message: "has joined the room" });
+      allRooms.push({ roomName: room, id, password })
+      let availableRooms = _.uniqBy(allRooms, 'roomName')
+      io.to(room).emit("room-message", { availableRooms, name, message: "has joined the room" });
+      io.to(room).emit("users", users)
     })
 
     socket.on("chat-message", (message) => {
