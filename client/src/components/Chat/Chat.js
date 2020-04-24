@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import queryString from "query-string";
 import io from "socket.io-client";
+import Room from "../Room/Room";
 
 import "./chat.css";
 
@@ -10,6 +11,7 @@ const Chat = ({ location }) => {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
   const [messages, setMessages] = useState([])
+  const [availableRooms, setAvailableRooms] = useState([])
   const [inputValue, setInputValue] = useState("")
   const ENDPOINT = "localhost:5000";
 
@@ -21,7 +23,7 @@ const Chat = ({ location }) => {
     setName(name);
     setRoom(room);
 
-    socket.emit("join", { name, room });
+    socket.emit("join", { name, room, id: Math.floor(Math.random() * 10000), password: "" });
 
     return () => {
       socket.emit("disconnect");
@@ -33,7 +35,8 @@ const Chat = ({ location }) => {
 
   useEffect(() => {
     socket.on('room-message', (data) => {
-      setMessages([...messages, data])
+      setMessages([{ ...messages, name: data.name, message: data.message }])
+      setAvailableRooms(data.distinctRooms)
     })
   })
 
@@ -42,6 +45,7 @@ const Chat = ({ location }) => {
       setMessages([...messages, data])
     })
   })
+
 
   let nr = 1
   function key() {
@@ -69,6 +73,7 @@ const Chat = ({ location }) => {
         <input value={clearInput()} onChange={(event) => setInputValue(event.target.value)} type="text" />
         <button onClick={sendMessage}>Send</button>
       </div>
+      <Room rooms={availableRooms} />
     </div>
   );
 };

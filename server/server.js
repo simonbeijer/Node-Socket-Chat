@@ -67,14 +67,21 @@ const io = socketIO(server);
 
 app.use(router);
 
+let availableRooms = []
+
 io.on("connection", (socket) => {
   console.log("user connected");
 
-  socket.on("join", ({ name, room }) => {
-    console.log("Name: " + name);
-    console.log("Room: " + room);
+  socket.on("join", ({ name, room, id, password }) => {
     socket.join(room, () => {
-      io.to(room).emit("room-message", { name, message: "has joined the room" });
+
+      availableRooms.push(room)
+      const distinctRooms = [...new Set(availableRooms.map(room => room))]
+      console.log(distinctRooms)
+      if (distinctRooms === room) {
+
+      }
+      io.to(room).emit("room-message", { distinctRooms, name, message: "has joined the room" });
     })
 
     socket.on("chat-message", (message) => {
