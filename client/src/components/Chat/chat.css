@@ -1,0 +1,32 @@
+.mainContainer {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 5% 12.25% 12.25% 3.25% 12.25% 12.25% 12.25% 12.25% 12.25% 5%;
+    grid-template-rows: 5% 15% 15% 15% 15% 15% 15% 5%;
+    grid-template-areas: 
+    " . . . . . . . . . . "
+    " . rc rc . cc cc cc cc cc . "
+    " . rc rc . cc cc cc cc cc . "
+    " . rc rc . cc cc cc cc cc . "
+    " . rc rc . cc cc cc cc cc . "
+    " . rc rc . cc cc cc cc cc . "
+    " . rc rc . cc cc cc cc cc . "
+    " . . . . . . . . . . ";
+}
+
+.roomContainer {
+    grid-area: rc;
+    background-color: rgba(0, 0, 0, 0.164);
+}
+
+.chatContainer {
+    grid-area: cc;
+    background-color: rgba(0, 0, 0, 0.164);
+}
+
+
+
+ul {
+    list-style-type: none;
+}

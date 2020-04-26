@@ -77,28 +77,33 @@ const Chat = ({ location }) => {
   }
 
   return (
-    <div>
-      <h1>Chat</h1>
-      <ul>
-        {messages.map((message) => (
-          <li key={key()}>{message.name + ": " + message.message}</li>
-        ))}
-      </ul>
+    <div className="mainContainer">
+      <div className="chatContainer">
 
-      <div>
-        <input
-          value={clearInput()}
-          onChange={(event) => setInputValue(event.target.value)}
-          type="text"
-        />
-        <button onClick={sendMessage}>Send</button>
+        <h1>Chat</h1>
+        <ul>
+          {messages.map((message) => (
+            <li key={key()}>{message.name + ": " + message.message}</li>
+          ))}
+        </ul>
+
+        <div>
+          <input
+            value={clearInput()}
+            onChange={(event) => setInputValue(event.target.value)}
+            type="text"
+          />
+          <button onClick={sendMessage}>Send</button>
+        </div>
       </div>
-      <Room rooms={availableRooms} />
-      <div>Roomname: {room}</div>
-      <div>
-        {usersInRoom.map((user) => (
-          <p key={key()}>{user}</p>
-        ))}
+      <div className="roomContainer">
+        <Room rooms={availableRooms} />
+        <div>Roomname: {room}</div>
+        <div>
+          {usersInRoom.map((user) => (
+            <p key={key()}>{user}</p>
+          ))}
+        </div>
       </div>
     </div>
   );
