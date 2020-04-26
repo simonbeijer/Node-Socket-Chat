@@ -21,8 +21,8 @@
     height: 100%;
     width: 100%;
     display: grid;
-    grid-template-columns: 10% 10% 10% 10% 10% 10% 10% 10% 10% 10% ;
-    grid-template-rows: 10% 10% 10% 10% 10% 10% 10% 10% 10% 10% ;
+    grid-template-columns: 5% 10% 10% 10% 20% 10% 10% 10% 10% 5% ;
+    grid-template-rows: 10% 5% 10% 10% 20% 10% 10% 10% 5% 10% ;
     grid-template-areas: 
     " . . . . ch ch . . . . "
     " . . . . . . . . . . "
@@ -46,6 +46,8 @@
     overflow: scroll;
     grid-area: cm;
     background-color: rgba(0, 0, 0, 0.192);
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .chatInputContainer {
@@ -65,8 +67,9 @@
 
 .roomContainer {
     grid-area: rc;
-    overflow: scroll;
     background-color: rgba(0, 0, 0, 0.164);
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 
