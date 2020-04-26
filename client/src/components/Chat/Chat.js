@@ -80,20 +80,20 @@ const Chat = ({ location }) => {
     <div className="mainContainer">
       <div className="chatContainer">
 
-        <h1>Chat</h1>
-        <ul>
+        <h1 className="chatHeading">Chat</h1>
+        <ul className="chatMessages">
           {messages.map((message) => (
             <li key={key()}>{message.name + ": " + message.message}</li>
           ))}
         </ul>
 
-        <div>
-          <input
+        <div className="chatInputContainer">
+          <input className="chatInput"
             value={clearInput()}
             onChange={(event) => setInputValue(event.target.value)}
             type="text"
           />
-          <button onClick={sendMessage}>Send</button>
+          <button className="chatButton" onClick={sendMessage}>Send</button>
         </div>
       </div>
       <div className="roomContainer">
