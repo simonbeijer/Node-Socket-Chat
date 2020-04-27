@@ -45,7 +45,12 @@ const Chat = ({ location }) => {
         message: data.message,
       };
       setMessages([...messages, x]);
-      setAvailableRooms(data.availableRooms);
+    });
+  });
+
+  useEffect(() => {
+    socket.on("new-rooms", (availableRooms) => {
+      setAvailableRooms(availableRooms);
     });
   });
 
@@ -79,7 +84,6 @@ const Chat = ({ location }) => {
   return (
     <div className="mainContainer">
       <div className="chatContainer">
-
         <h1 className="chatHeading">Chat</h1>
         <ul className="chatMessages">
           {messages.map((message) => (
@@ -88,12 +92,15 @@ const Chat = ({ location }) => {
         </ul>
 
         <div className="chatInputContainer">
-          <input className="chatInput"
+          <input
+            className="chatInput"
             value={clearInput()}
             onChange={(event) => setInputValue(event.target.value)}
             type="text"
           />
-          <button className="chatButton" onClick={sendMessage}>Send</button>
+          <button className="chatButton" onClick={sendMessage}>
+            Send
+          </button>
         </div>
       </div>
       <div className="roomContainer">
@@ -101,7 +108,7 @@ const Chat = ({ location }) => {
         <div>Roomname: {room}</div>
         <div>
           {usersInRoom.map((user) => (
-            <p key={key()}>{user}</p>
+            <p key={key()}>{user.name}</p>
           ))}
         </div>
       </div>

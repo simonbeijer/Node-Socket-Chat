@@ -69,39 +69,74 @@ app.use(router);
 let allRooms = [];
 let allUsers = [];
 
+function createId() {
+  return Math.floor(Math.random() * 10000);
+}
+
 io.on("connection", (socket) => {
   console.log("user connected");
+  let users = [];
+  let userSocket;
 
   socket.on("join", ({ name, room, id, password }) => {
     socket.join(room, () => {
-      allUsers.push({ room, name });
-      let users = [];
+      userSocket = { room, name, userId: createId() };
+      allUsers.push(userSocket);
       for (let i of allUsers) {
         if (i.room === room) {
-          users.push(i.name);
+          users.push(i);
         }
       }
-
+      console.log(users);
       allRooms.push({ roomName: room, id, password });
       let availableRooms = _.uniqBy(allRooms, "roomName");
       io.to(room).emit("room-message", {
-        availableRooms,
         name,
         message: "has joined the room",
       });
       io.to(room).emit("users", users);
+      io.emit("new-rooms", availableRooms);
     });
 
     socket.on("chat-message", (message) => {
       io.to(room).emit("chat-message", { message, name });
     });
-  });
 
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
+    socket.on("disconnect", () => {
+      console.log("Bye");
+
+      for (let user of allUsers) {
+        if (user.userId === userSocket.userId) {
+          let i = allUsers.indexOf(user);
+          console.log(i);
+          allUsers.splice(i, 1);
+        }
+        users = [];
+        for (let i of allUsers) {
+          if (i.room === room) {
+            users.push(i);
+          }
+        }
+        io.to(room).emit("users", users);
+      }
+    });
   });
 });
 
 server.listen(port, () =>
   console.log(`Server is up an runing on port: ${port}`)
 );
+
+// rooms: [
+//   {
+//     roomName: roomName,
+//     id: id,
+//     password: password,
+//     users: [
+//       {
+//         userName: name,
+//         userId: userId
+//       }
+//     ]
+//   }
+// ]
