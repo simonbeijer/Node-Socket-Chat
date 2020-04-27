@@ -1,10 +1,10 @@
 .mainContainer {
-    height: 100%;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 5% 12.25% 12.25% 3.25% 12.25% 12.25% 12.25% 12.25% 12.25% 5%;
-    grid-template-rows: 5% 15% 15% 15% 15% 15% 15% 5%;
-    grid-template-areas: 
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 5% 12.25% 12.25% 3.25% 12.25% 12.25% 12.25% 12.25% 12.25% 5%;
+  grid-template-rows: 5% 15% 15% 15% 15% 15% 15% 5%;
+  grid-template-areas:
     " . . . . . . . . . . "
     " . rc rc . cc cc cc cc cc . "
     " . rc rc . cc cc cc cc cc . "
@@ -16,14 +16,14 @@
 }
 
 .chatContainer {
-    grid-area: cc;
-    background-color: rgba(0, 0, 0, 0.164);
-    height: 100%;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 5% 10% 10% 10% 20% 10% 10% 10% 10% 5% ;
-    grid-template-rows: 10% 5% 10% 10% 20% 10% 10% 10% 5% 10% ;
-    grid-template-areas: 
+  grid-area: cc;
+  background-color: rgba(0, 0, 0, 0.164);
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 5% 10% 10% 10% 20% 10% 10% 10% 10% 5%;
+  grid-template-rows: 10% 5% 10% 10% 20% 10% 10% 10% 5% 10%;
+  grid-template-areas:
     " . . . . ch ch . . . . "
     " . . . . . . . . . . "
     " . cm cm cm cm cm cm cm cm  . "
@@ -37,43 +37,62 @@
 }
 
 .chatHeading {
-    grid-area: ch;
-    display: flex;
-    justify-content: center;
+  grid-area: ch;
+  display: flex;
+  justify-content: center;
 }
 
 .chatMessages {
-    overflow: scroll;
-    grid-area: cm;
-    background-color: rgba(0, 0, 0, 0.192);
-    overflow-y: scroll;
-    overflow-x: hidden;
+  overflow: scroll;
+  grid-area: cm;
+  background-color: rgba(0, 0, 0, 0.192);
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .chatInputContainer {
-    grid-area: ci;
+  grid-area: ci;
 }
 
 .chatInput {
-    width: 80%;
-    height: 100%;
-    margin-right: 0.2rem;
+  width: 80%;
+  height: 100%;
+  margin-right: 0.2rem;
 }
 
 .chatButton {
-    /* width: 20%; */
-    height: 100%;
+  /* width: 20%; */
+  height: 100%;
 }
 
 .roomContainer {
-    grid-area: rc;
-    background-color: rgba(0, 0, 0, 0.164);
-    overflow-y: scroll;
-    overflow-x: hidden;
+  grid-area: rc;
+  background-color: rgba(0, 0, 0, 0.164);
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
+.roomContainer {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 50% 50%;
+  grid-template-areas:
+    " rs rn "
+    " rs rn ";
+}
 
+.rooms {
+  grid-area: rs;
+  margin-bottom: 0.3rem;
+}
+
+.roomname {
+  grid-area: rn;
+  margin-bottom: 0.3rem;
+}
 
 ul {
-    list-style-type: none;
+  list-style-type: none;
 }

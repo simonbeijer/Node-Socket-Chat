@@ -66,8 +66,7 @@ const _ = require("lodash");
 
 app.use(router);
 
-let allRooms = [];
-let allUsers = [];
+let rooms = [];
 
 function createId() {
   return Math.floor(Math.random() * 10000);
@@ -76,20 +75,41 @@ function createId() {
 io.on("connection", (socket) => {
   console.log("user connected");
   let users = [];
-  let userSocket;
+  let userSocket = [];
 
   socket.on("join", ({ name, room, id, password }) => {
-    socket.join(room, () => {
-      userSocket = { room, name, userId: createId() };
-      allUsers.push(userSocket);
-      for (let i of allUsers) {
-        if (i.room === room) {
-          users.push(i);
+    userSocket = { name, userId: createId() };
+
+    if (rooms.length <= 0) {
+      rooms.push({
+        roomName: room,
+        id,
+        password,
+        users: [userSocket],
+      });
+    } else {
+      for (let r of rooms) {
+        if (r.roomName === room) {
+          r.users.push(userSocket);
+        } else {
+          rooms.push({
+            roomName: room,
+            id,
+            password,
+            users: [userSocket],
+          });
         }
       }
-      console.log(users);
-      allRooms.push({ roomName: room, id, password });
-      let availableRooms = _.uniqBy(allRooms, "roomName");
+    }
+    console.log(JSON.stringify(rooms, null, 2));
+
+    let availableRooms = _.uniqBy(rooms, "roomName");
+    socket.join(room, () => {
+      for (let i of rooms) {
+        if (i.roomName === room) {
+          users = i.users;
+        }
+      }
       io.to(room).emit("room-message", {
         name,
         message: "has joined the room",
@@ -103,22 +123,23 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-      console.log("Bye");
+      console.log("User disconnected");
 
-      for (let user of allUsers) {
-        if (user.userId === userSocket.userId) {
-          let i = allUsers.indexOf(user);
-          console.log(i);
-          allUsers.splice(i, 1);
+      for (let i of rooms) {
+        if (i.roomName === room) {
+          let index = i.users.indexOf(userSocket);
+          i.users.splice(index, 1);
         }
-        users = [];
-        for (let i of allUsers) {
-          if (i.room === room) {
-            users.push(i);
-          }
-        }
-        io.to(room).emit("users", users);
       }
+      console.log(JSON.stringify(rooms, null, 2));
+
+      users = [];
+      for (let i of rooms) {
+        if (i.roomName === room) {
+          users = i.users;
+        }
+      }
+      io.to(room).emit("users", users);
     });
   });
 });
@@ -126,17 +147,3 @@ io.on("connection", (socket) => {
 server.listen(port, () =>
   console.log(`Server is up an runing on port: ${port}`)
 );
-
-// rooms: [
-//   {
-//     roomName: roomName,
-//     id: id,
-//     password: password,
-//     users: [
-//       {
-//         userName: name,
-//         userId: userId
-//       }
-//     ]
-//   }
-// ]
