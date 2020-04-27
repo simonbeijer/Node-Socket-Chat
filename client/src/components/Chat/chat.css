@@ -1,0 +1,79 @@
+.mainContainer {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 5% 12.25% 12.25% 3.25% 12.25% 12.25% 12.25% 12.25% 12.25% 5%;
+    grid-template-rows: 5% 15% 15% 15% 15% 15% 15% 5%;
+    grid-template-areas: 
+    " . . . . . . . . . . "
+    " . rc rc . cc cc cc cc cc . "
+    " . rc rc . cc cc cc cc cc . "
+    " . rc rc . cc cc cc cc cc . "
+    " . rc rc . cc cc cc cc cc . "
+    " . rc rc . cc cc cc cc cc . "
+    " . rc rc . cc cc cc cc cc . "
+    " . . . . . . . . . . ";
+}
+
+.chatContainer {
+    grid-area: cc;
+    background-color: rgba(0, 0, 0, 0.164);
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 5% 10% 10% 10% 20% 10% 10% 10% 10% 5% ;
+    grid-template-rows: 10% 5% 10% 10% 20% 10% 10% 10% 5% 10% ;
+    grid-template-areas: 
+    " . . . . ch ch . . . . "
+    " . . . . . . . . . . "
+    " . cm cm cm cm cm cm cm cm  . "
+    " . cm cm cm cm cm cm cm cm  . "
+    " . cm cm cm cm cm cm cm cm  . "
+    " . cm cm cm cm cm cm cm cm  . "
+    " . cm cm cm cm cm cm cm cm  . "
+    " . cm cm cm cm cm cm cm cm  . "
+    " . . . . . . . . . . "
+    " . ci ci ci ci ci ci ci ci . ";
+}
+
+.chatHeading {
+    grid-area: ch;
+    display: flex;
+    justify-content: center;
+}
+
+.chatMessages {
+    overflow: scroll;
+    grid-area: cm;
+    background-color: rgba(0, 0, 0, 0.192);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.chatInputContainer {
+    grid-area: ci;
+}
+
+.chatInput {
+    width: 80%;
+    height: 100%;
+    margin-right: 0.2rem;
+}
+
+.chatButton {
+    /* width: 20%; */
+    height: 100%;
+}
+
+.roomContainer {
+    grid-area: rc;
+    background-color: rgba(0, 0, 0, 0.164);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+
+
+ul {
+    list-style-type: none;
+}

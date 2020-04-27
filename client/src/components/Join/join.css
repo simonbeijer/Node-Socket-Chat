@@ -1,0 +1,36 @@
+.joinOuterContainer {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.joinInnerContainer {
+    background-color: rgba(0, 0, 0, 0.432);
+    border-radius: 15px;
+}
+
+.inputContainer {
+    padding: 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.heading {
+    margin-bottom: 1rem;
+}
+
+.joinInput {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    border: none
+}
+
+button {
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+}

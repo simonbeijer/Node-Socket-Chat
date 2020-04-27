@@ -10,31 +10,34 @@ const Join = () => {
   return (
     <div className="joinOuterContainer">
       <div className="joinInnerContainer">
-        <h1 className="heading">Join</h1>
-        <div>
-          <input
-            type="text"
-            placeholder="Name"
-            className="joinInput"
-            onChange={(event) => setName(event.target.value)}
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            placeholder="Room"
-            className="joinInput mt-20"
-            onChange={(event) => setRoom(event.target.value)}
-          />
-        </div>
-        <Link
-          to={`/chat?name=${name}&room=${room}`}
-          onClick={(event) => (!name || !room ? event.preventDefault() : null)}
-        >
-          <button className="button mt-20" type="submit">
-            Sign In
+        <div className="inputContainer">
+
+          <h1 className="heading">Join</h1>
+          <div>
+            <input
+              type="text"
+              placeholder="Name"
+              className="joinInput"
+              onChange={(event) => setName(event.target.value)}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              placeholder="Room"
+              className="joinInput mt-20"
+              onChange={(event) => setRoom(event.target.value)}
+            />
+          </div>
+          <Link
+            to={`/chat?name=${name}&room=${room}`}
+            onClick={(event) => (!name || !room ? event.preventDefault() : null)}
+          >
+            <button className="button mt-20" type="submit">
+              Sign In
           </button>
-        </Link>
+          </Link>
+        </div>
       </div>
     </div>
   );
