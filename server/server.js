@@ -66,8 +66,10 @@ const _ = require("lodash");
 
 app.use(router);
 
-let allRooms = [];
-let allUsers = [];
+let rooms = [];
+let availableRooms = [];
+let foundRoom = false;
+let nr;
 
 function createId() {
   return Math.floor(Math.random() * 10000);
@@ -75,25 +77,88 @@ function createId() {
 
 io.on("connection", (socket) => {
   console.log("user connected");
-  let users = [];
-  let userSocket;
+
+  let userSocket = [];
 
   socket.on("join", ({ name, room, id, password }) => {
-    socket.join(room, () => {
-      userSocket = { room, name, userId: createId() };
-      allUsers.push(userSocket);
-      for (let i of allUsers) {
-        if (i.room === room) {
-          users.push(i);
+    userSocket = { name, userId: createId() };
+
+    if (rooms.length <= 0) {
+      rooms.push({
+        roomName: room,
+        id,
+        password,
+        users: [userSocket],
+      });
+    } else {
+      nr = 0;
+      for (const r of rooms) {
+        nr++;
+        if (r.roomName === room) {
+          foundRoom = true;
+          break;
         }
       }
-      console.log(users);
-      allRooms.push({ roomName: room, id, password });
-      let availableRooms = _.uniqBy(allRooms, "roomName");
+
+      if (foundRoom) {
+        rooms[nr - 1].users.push(userSocket);
+
+        foundRoom = false;
+      } else {
+        rooms.push({
+          roomName: room,
+          id,
+          password,
+          users: [userSocket],
+        });
+      }
+    }
+
+    // leave all other rooms first!
+
+    for (const roomx of rooms) {
+      socket.leave(roomx.roomName, () => {
+        for (const user of roomx.users) {
+          if (user.name === userSocket.name) {
+            let index = roomx.users.indexOf(user);
+
+            roomx.users.splice(index, 1);
+            io.to(roomx.roomName).emit("users", roomx.users);
+          }
+        }
+      });
+    }
+
+    socket.join(room, () => {
+      availableRooms = [];
+
+      for (const i of rooms) {
+        if (i.roomName === room) {
+          i.users.push(userSocket);
+          users = i.users;
+          console.log("adda name");
+        }
+      }
+
+      for (const i of rooms) {
+        if (i.users.length <= 0) {
+          let index = rooms.indexOf(i);
+          console.log(index);
+          rooms.splice(index, 1);
+          console.log("remove empty");
+        }
+      }
+
+      for (const room of rooms) {
+        availableRooms.push(room);
+      }
+
+      console.log("ROOMS:", JSON.stringify(rooms, null, 2));
       io.to(room).emit("room-message", {
         name,
         message: "has joined the room",
       });
+
       io.to(room).emit("users", users);
       io.emit("new-rooms", availableRooms);
     });
@@ -103,22 +168,22 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-      console.log("Bye");
+      console.log("User disconnected");
 
-      for (let user of allUsers) {
-        if (user.userId === userSocket.userId) {
-          let i = allUsers.indexOf(user);
-          console.log(i);
-          allUsers.splice(i, 1);
+      for (let i of rooms) {
+        if (i.roomName === room) {
+          let index = i.users.indexOf(userSocket);
+          i.users.splice(index, 1);
         }
-        users = [];
-        for (let i of allUsers) {
-          if (i.room === room) {
-            users.push(i);
-          }
-        }
-        io.to(room).emit("users", users);
       }
+
+      users = [];
+      for (let i of rooms) {
+        if (i.roomName === room) {
+          users = i.users;
+        }
+      }
+      io.to(room).emit("users", users);
     });
   });
 });
@@ -127,16 +192,12 @@ server.listen(port, () =>
   console.log(`Server is up an runing on port: ${port}`)
 );
 
-// rooms: [
-//   {
-//     roomName: roomName,
-//     id: id,
-//     password: password,
-//     users: [
-//       {
-//         userName: name,
-//         userId: userId
-//       }
-//     ]
-//   }
-// ]
+// {
+//   "roomName": "123",
+//   "id": 8197,
+//   "password": "",
+//   "users": [
+//     {
+//       "name": "Fredrik",
+//       "userId": 8956
+//     }

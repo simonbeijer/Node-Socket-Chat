@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import queryString from "query-string";
 import io from "socket.io-client";
 import Room from "../Room/Room";
+import AddRoom from "../AddRoom/AddRoom";
 
 import "./chat.css";
 
@@ -14,6 +15,7 @@ const Chat = ({ location }) => {
   const [messages, setMessages] = useState([]);
   const [availableRooms, setAvailableRooms] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const [showAddRoom, setShowAddRoom] = useState(false);
   const ENDPOINT = "localhost:5000";
 
   useEffect(() => {
@@ -104,12 +106,22 @@ const Chat = ({ location }) => {
         </div>
       </div>
       <div className="roomContainer">
-        <Room rooms={availableRooms} />
-        <div>Roomname: {room}</div>
-        <div>
-          {usersInRoom.map((user) => (
-            <p key={key()}>{user.name}</p>
-          ))}
+        <div className="rooms">
+          <Room name={name} room={room} rooms={availableRooms} />
+          <div>
+            {showAddRoom && (
+              <AddRoom name={name} room={room} setRoom={setRoom} />
+            )}
+          </div>
+          <button onClick={() => setShowAddRoom(!showAddRoom)}>ADD ROOM</button>
+        </div>
+        <div className="roomname">
+          <div>Roomname: {room}</div>
+          <div>
+            {usersInRoom.map((user) => (
+              <p key={key()}>{user.name}</p>
+            ))}
+          </div>
         </div>
       </div>
     </div>
