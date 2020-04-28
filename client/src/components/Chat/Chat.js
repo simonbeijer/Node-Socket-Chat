@@ -107,13 +107,13 @@ const Chat = ({ location }) => {
       </div>
       <div className="roomContainer">
         <div className="rooms">
-          <button onClick={() => setShowAddRoom(!showAddRoom)}>HÄR</button>
           <Room name={name} room={room} rooms={availableRooms} />
           <div>
             {showAddRoom && (
               <AddRoom name={name} room={room} setRoom={setRoom} />
             )}
           </div>
+          <button onClick={() => setShowAddRoom(!showAddRoom)}>ADD ROOM</button>
         </div>
         <div className="roomname">
           <div>Roomname: {room}</div>

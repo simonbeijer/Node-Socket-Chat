@@ -77,14 +77,13 @@ function createId() {
 
 io.on("connection", (socket) => {
   console.log("user connected");
-  let users = [];
+
   let userSocket = [];
 
   socket.on("join", ({ name, room, id, password }) => {
     userSocket = { name, userId: createId() };
 
     if (rooms.length <= 0) {
-      console.log("NO ROOMS, LOBBY CREATED");
       rooms.push({
         roomName: room,
         id,
@@ -100,12 +99,10 @@ io.on("connection", (socket) => {
           break;
         }
       }
-      console.log(foundRoom);
-      console.log(nr);
 
       if (foundRoom) {
         rooms[nr - 1].users.push(userSocket);
-        console.log(JSON.stringify(rooms, null, 2));
+
         foundRoom = false;
       } else {
         rooms.push({
@@ -114,7 +111,6 @@ io.on("connection", (socket) => {
           password,
           users: [userSocket],
         });
-        console.log(JSON.stringify(rooms, null, 2));
       }
     }
 
@@ -125,9 +121,9 @@ io.on("connection", (socket) => {
         for (const user of roomx.users) {
           if (user.name === userSocket.name) {
             let index = roomx.users.indexOf(user);
-            console.log("USERS BEFORE LEAVE ROOM", roomx.users);
+
             roomx.users.splice(index, 1);
-            console.log("USERS AFTER LEAVE ROOM", roomx.users);
+            io.to(roomx.roomName).emit("users", roomx.users);
           }
         }
       });
@@ -135,14 +131,26 @@ io.on("connection", (socket) => {
 
     socket.join(room, () => {
       availableRooms = [];
-      for (let i of rooms) {
-        availableRooms.push(i);
+
+      for (const i of rooms) {
         if (i.roomName === room) {
-          console.log("USERS BEFORE JOIN ROOM", i.users, room);
           i.users.push(userSocket);
-          console.log("USERS AFTER JOIN ROOM", i.users, room);
           users = i.users;
+          console.log("adda name");
         }
+      }
+
+      for (const i of rooms) {
+        if (i.users.length <= 0) {
+          let index = rooms.indexOf(i);
+          console.log(index);
+          rooms.splice(index, 1);
+          console.log("remove empty");
+        }
+      }
+
+      for (const room of rooms) {
+        availableRooms.push(room);
       }
 
       console.log("ROOMS:", JSON.stringify(rooms, null, 2));
@@ -150,6 +158,7 @@ io.on("connection", (socket) => {
         name,
         message: "has joined the room",
       });
+
       io.to(room).emit("users", users);
       io.emit("new-rooms", availableRooms);
     });

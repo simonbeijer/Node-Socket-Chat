@@ -68,24 +68,24 @@
 .roomContainer {
   grid-area: rc;
   background-color: rgba(0, 0, 0, 0.164);
-  overflow-y: scroll;
-  overflow-x: hidden;
 }
 
 .roomContainer {
   height: 100%;
   width: 100%;
   display: grid;
+  padding: 0.5rem;
   grid-template-columns: 50% 50%;
   grid-template-rows: 50% 50%;
   grid-template-areas:
-    " rs rn "
-    " rs rn ";
+    " rs rs "
+    " rn rn ";
 }
 
 .rooms {
   grid-area: rs;
-  margin-bottom: 0.3rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .roomname {
