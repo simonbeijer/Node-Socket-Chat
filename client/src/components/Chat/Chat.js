@@ -13,10 +13,13 @@ const Chat = ({ location }) => {
   const [room, setRoom] = useState("");
   const [usersInRoom, setUsersInRoom] = useState([]);
   const [messages, setMessages] = useState([]);
-  const [availableRooms, setAvailableRooms] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [showAddRoom, setShowAddRoom] = useState(false);
+  const [password, setPassword] = useState(null);
+  const [wrongPassword, setWrongPassword] = useState(false);
   const ENDPOINT = "localhost:5000";
+  const [lockedRooms, setLockedRooms] = useState([]);
+  const [unlockedRooms, setUnlockedRooms] = useState([]);
 
   useEffect(() => {
     const { name, room } = queryString.parse(location.search);
@@ -30,7 +33,7 @@ const Chat = ({ location }) => {
       name,
       room,
       id: Math.floor(Math.random() * 10000),
-      password: "",
+      password,
     });
 
     return () => {
@@ -51,8 +54,9 @@ const Chat = ({ location }) => {
   });
 
   useEffect(() => {
-    socket.on("new-rooms", (availableRooms) => {
-      setAvailableRooms(availableRooms);
+    socket.on("new-rooms", (data) => {
+      setLockedRooms(data.lockedRoomsX);
+      setUnlockedRooms(data.unlockedRoomsX);
     });
   });
 
@@ -65,6 +69,18 @@ const Chat = ({ location }) => {
   useEffect(() => {
     socket.on("users", (users) => {
       setUsersInRoom(users);
+    });
+  });
+
+  useEffect(() => {
+    socket.on("wrong-password", () => {
+      setWrongPassword(true);
+    });
+  });
+
+  useEffect(() => {
+    socket.on("correct-password", () => {
+      setWrongPassword(false);
     });
   });
 
@@ -88,9 +104,16 @@ const Chat = ({ location }) => {
       <div className="chatContainer">
         <h1 className="chatHeading">Chat</h1>
         <ul className="chatMessages">
-          {messages.map((message) => (
-            <li key={key()}>{message.name + ": " + message.message}</li>
-          ))}
+          {wrongPassword ? (
+            <p>WRONG PASSWORD</p>
+          ) : (
+            messages.map(
+              (message) =>
+                message.room === room && (
+                  <li key={key()}>{`${message.name}:  ${message.message}`}</li>
+                )
+            )
+          )}
         </ul>
 
         <div className="chatInputContainer">
@@ -107,10 +130,22 @@ const Chat = ({ location }) => {
       </div>
       <div className="roomContainer">
         <div className="rooms">
-          <Room name={name} room={room} rooms={availableRooms} />
+          <Room
+            name={name}
+            room={room}
+            lockedRooms={lockedRooms}
+            unlockedRooms={unlockedRooms}
+            setPassword={setPassword}
+            password={wrongPassword}
+          />
           <div>
             {showAddRoom && (
-              <AddRoom name={name} room={room} setRoom={setRoom} />
+              <AddRoom
+                name={name}
+                room={room}
+                setRoom={setRoom}
+                setPassword={setPassword}
+              />
             )}
           </div>
           <button onClick={() => setShowAddRoom(!showAddRoom)}>ADD ROOM</button>

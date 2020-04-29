@@ -12,9 +12,15 @@ const AddRoom = (props) => {
           <div>
             <input
               type="text"
-              placeholder="Room"
+              placeholder="Room..."
               className="addInput"
               onChange={(event) => props.setRoom(event.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Password (optional)..."
+              className="password"
+              onChange={(event) => props.setPassword(event.target.value)}
             />
           </div>
           <Link
