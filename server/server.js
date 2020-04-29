@@ -163,14 +163,19 @@ io.on("connection", (socket) => {
       });
 
       socket.on("chat-message", (message) => {
-        io.to(room).emit("chat-message", { message, name, room });
+        console.log(message)
+          if(message === "/fed19") {
+            io.to(room).emit("chat-message", { message: "Gryma front-end elever", name, room });
+          } else {
+            io.to(room).emit("chat-message", { message, name, room });
+          }
       });
 
       socket.on('typing', (data) => {
         if(data.typing == true) {
-          io.emit('display', data)
+          io.to(room).emit('display', data)
         } else {
-          io.emit('display', data)
+          io.to(room).emit('display', data)
         }
       })
 

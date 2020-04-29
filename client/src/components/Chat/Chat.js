@@ -86,12 +86,6 @@ const Chat = ({ location }) => {
     });
   });
 
-  // useEffect(() => {
-  //   socket.emit("typing", {
-  //     user: name,
-  //     typing: true
-  //   })
- 
   useEffect(() => {
     socket.on("display", (data) => {
       setTyping(data)
@@ -113,11 +107,20 @@ const Chat = ({ location }) => {
     setInputValue("");
   }
 
+  function test() {
+    socket.emit("typing", {
+      user: name,
+      typing: false,
+      room: room
+    })
+
+  }
+
   return (
     <div className="mainContainer">
       <div className="chatContainer">
         <h1 className="chatHeading">Chat</h1>
-        {typing.typing == true && typing.room == room ? 
+        {typing.typing == true ? 
         <p>{typing.user + " skriver"}</p> : <p></p>}
         <ul className="chatMessages">
           {wrongPassword ? (
@@ -153,7 +156,8 @@ const Chat = ({ location }) => {
               }}}
             type="text"
           />
-          <button className="chatButton" onClick={sendMessage}>
+          <button className="chatButton" 
+          onClick={() => {sendMessage(); test()}}>
             Send
           </button>
         </div>

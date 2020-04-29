@@ -13,7 +13,7 @@ const Room = (props) => {
   const roomArray = props.unlockedRooms.map((room) => (
     <>
     <Link key={room.id} to={`/chat?name=${props.name}&room=${room.roomName}`}>
-      <li>{room.roomName}</li>
+      <li><h3>{room.roomName}</h3></li>
     </Link>
     {room.users.map((user) => (
       <p>{user.name}</p>
