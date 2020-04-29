@@ -129,10 +129,15 @@ const Chat = ({ location }) => {
             messages.map(
               (message) =>
                 message.room === room && (
-                  <li key={key()}>{`${message.name}:  ${message.message}`}</li>
-                )
-            )
-          )}
+                  <>
+                  <li key={key()}>{`${message.name}:  ${message.message}`}
+                  <img src={message.img} />
+                  </li>
+                  </>
+                  )
+                  
+                  )
+                  )}
         </ul>
 
         <div className="chatInputContainer">
