@@ -20,6 +20,8 @@ const Chat = ({ location }) => {
   const ENDPOINT = "localhost:5000";
   const [lockedRooms, setLockedRooms] = useState([]);
   const [unlockedRooms, setUnlockedRooms] = useState([]);
+  const [typing, setTyping] = useState([]);
+
 
   useEffect(() => {
     const { name, room } = queryString.parse(location.search);
@@ -84,6 +86,12 @@ const Chat = ({ location }) => {
     });
   });
 
+  useEffect(() => {
+    socket.on("display", (data) => {
+      setTyping(data)
+    });
+  });
+
   let nr = 1;
   function key() {
     nr++;
@@ -99,10 +107,21 @@ const Chat = ({ location }) => {
     setInputValue("");
   }
 
+  function test() {
+    socket.emit("typing", {
+      user: name,
+      typing: false,
+      room: room
+    })
+
+  }
+
   return (
     <div className="mainContainer">
       <div className="chatContainer">
         <h1 className="chatHeading">Chat</h1>
+        {typing.typing == true ? 
+        <p>{typing.user + " skriver"}</p> : <p></p>}
         <ul className="chatMessages">
           {wrongPassword ? (
             <p>WRONG PASSWORD</p>
@@ -110,20 +129,41 @@ const Chat = ({ location }) => {
             messages.map(
               (message) =>
                 message.room === room && (
-                  <li key={key()}>{`${message.name}:  ${message.message}`}</li>
-                )
-            )
-          )}
+                  <>
+                  <li key={key()}>{`${message.name}:  ${message.message}`}
+                  <br/>
+                  <img src={message.img} />
+                  </li>
+                  </>
+                  )
+                  
+                  )
+                  )}
         </ul>
 
         <div className="chatInputContainer">
           <input
             className="chatInput"
             value={clearInput()}
-            onChange={(event) => setInputValue(event.target.value)}
+            onChange={(event) => {
+              setInputValue(event.target.value); 
+              if(event.target.value.length > 0) {
+                socket.emit("typing", {
+                  user: name,
+                  typing: true,
+                  room: room
+                })
+              } else {
+                socket.emit("typing", {
+                  user: name,
+                  typing: false,
+                  room: room
+                })
+              }}}
             type="text"
           />
-          <button className="chatButton" onClick={sendMessage}>
+          <button className="chatButton" 
+          onClick={() => {sendMessage(); test()}}>
             Send
           </button>
         </div>

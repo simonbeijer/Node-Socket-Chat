@@ -163,8 +163,23 @@ io.on("connection", (socket) => {
       });
 
       socket.on("chat-message", (message) => {
-        io.to(room).emit("chat-message", { message, name, room });
+        console.log(message)
+          if(message === "/fed19") {
+            io.to(room).emit("chat-message", { message, name, room, img: "https://media.giphy.com/media/W1VdPHo8Ft3Es/200w_d.gif" });
+          } else if(message === "/dota") {
+            io.to(room).emit("chat-message", { message, name, room, img: "https://media.giphy.com/media/5NTfjgFn3vjWg/200w_d.gif" });
+          } else {
+            io.to(room).emit("chat-message", { message, name, room, img: "" });
+          }
       });
+
+      socket.on('typing', (data) => {
+        if(data.typing == true) {
+          io.to(room).emit('display', data)
+        } else {
+          io.to(room).emit('display', data)
+        }
+      })
 
       socket.on("disconnect", () => {
         console.log("User disconnected");
