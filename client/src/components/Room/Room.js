@@ -11,19 +11,18 @@ const Room = (props) => {
   console.log(props.unlockedRooms);
   console.log(props.lockedRooms);
   const roomArray = props.unlockedRooms.map((room) => (
+    <>
     <Link key={room.id} to={`/chat?name=${props.name}&room=${room.roomName}`}>
       <li>{room.roomName}</li>
     </Link>
+    {room.users.map((user) => (
+      <p>{user.name}</p>
+    ))}
+    </>
   ));
-
-  console.log("PASSWORD", props.password);
-  // if (!props.password) {
-  //   setPass(true);
-  // } else {
-  //   setPass(false);
-  // }
-
+  
   const roomArrayLocked = props.lockedRooms.map((room) => (
+    <>
     <Link
       onClick={test}
       key={room.id}
@@ -33,8 +32,12 @@ const Room = (props) => {
           : `/chat?name=${props.name}&room=lobby`
       }
     >
-      <li>{room.roomName} + LOCKED</li>
+      <li><h3>{room.roomName} + LOCKED</h3></li>
     </Link>
+    {room.users.map((user) => (
+      <p>{user.name}</p>
+    ))}
+    </>
   ));
 
   return (
