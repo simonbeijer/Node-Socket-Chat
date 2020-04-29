@@ -1,7 +1,3 @@
-// const express = require("express");
-// const socketIO = require("socket.io");
-// const http = require("http");
-
 // const chalk = require('chalk')
 
 // const router = require("./router");
@@ -9,26 +5,6 @@
 // const app = express();
 // const server = http.createServer(app);
 // const io = socketIO(server);
-
-// app.use(router);
-
-// const serverPort = [{
-//     running: 'Server is running!',
-//     port: process.env.PORT || 5000,
-// }]
-
-// io.on("connection", (socket) => {
-//   console.log("user connected");
-
-//   socket.on("join", ({ name, room }) => {
-//     console.log(name);
-//     console.log(room);
-//   });
-
-//   socket.on("disconnect", () => {
-//     console.log("user disconnected");
-//   });
-// });
 
 // server.listen(serverPort.port, () =>
 //     portRunning()
@@ -67,7 +43,8 @@ const _ = require("lodash");
 app.use(router);
 
 let rooms = [];
-let availableRooms = [];
+let unlockedRoomsX = [];
+let lockedRoomsX = [];
 let foundRoom = false;
 let nr;
 
@@ -114,80 +91,102 @@ io.on("connection", (socket) => {
         });
       }
     }
+    console.log("ROOMS:", JSON.stringify(rooms, null, 2));
+    console.log(room);
 
-    // Leave all other rooms first!
-    for (const roomx of rooms) {
-      socket.leave(roomx.roomName, () => {
-        for (const user of roomx.users) {
-          if (user.name === userSocket.name) {
-            let index = roomx.users.indexOf(user);
+    let roomIndex = rooms.findIndex((roomx) => roomx.roomName == room);
+    console.log("roomindex", roomIndex);
+    let myRoom = rooms.slice(roomIndex);
 
-            roomx.users.splice(index, 1);
-            io.to(roomx.roomName).emit("users", roomx.users);
+    console.log("myroom", myRoom);
+    console.log("password", password);
+
+    if (myRoom[0].password == password) {
+      io.emit("correct-password", "You have entered an valid password");
+      // Leave all other rooms first!
+      for (const roomx of rooms) {
+        socket.leave(roomx.roomName, () => {
+          for (const user of roomx.users) {
+            if (user.name === userSocket.name) {
+              let index = roomx.users.indexOf(user);
+
+              roomx.users.splice(index, 1);
+              io.to(roomx.roomName).emit("users", roomx.users);
+            }
+          }
+        });
+      }
+
+      //Join room
+      socket.join(room, () => {
+        unlockedRoomsX = [];
+        lockedRoomsX = [];
+        for (const i of rooms) {
+          if (i.roomName === room) {
+            i.users.push(userSocket);
+            users = i.users;
           }
         }
+
+        for (const i of rooms) {
+          if (i.users.length <= 0) {
+            let index = rooms.indexOf(i);
+
+            rooms.splice(index, 1);
+          }
+        }
+
+        //All locked and unlocked rooms
+
+        for (const room of rooms) {
+          if (!room.password) {
+            unlockedRoomsX.push(room);
+          }
+        }
+        for (const room of rooms) {
+          if (room.password) {
+            lockedRoomsX.push(room);
+          }
+        }
+        console.log(unlockedRoomsX);
+        console.log(lockedRoomsX);
+
+        console.log("ROOMS:", JSON.stringify(rooms, null, 2));
+
+        io.to(room).emit("room-message", {
+          name,
+          message: "has joined the room",
+        });
+
+        io.to(room).emit("users", users);
+        io.emit("new-rooms", { lockedRoomsX, unlockedRoomsX });
       });
+
+      socket.on("chat-message", (message) => {
+        io.to(room).emit("chat-message", { message, name, room });
+      });
+
+      socket.on("disconnect", () => {
+        console.log("User disconnected");
+
+        for (let i of rooms) {
+          if (i.roomName === room) {
+            let index = i.users.indexOf(userSocket);
+            i.users.splice(index, 1);
+          }
+        }
+
+        users = [];
+        for (let i of rooms) {
+          if (i.roomName === room) {
+            users = i.users;
+          }
+        }
+        io.to(room).emit("users", users);
+      });
+    } else {
+      io.emit("wrong-password", "You have entered an invalid password");
     }
-
-    //Join room
-    socket.join(room, () => {
-      availableRooms = [];
-
-      for (const i of rooms) {
-        if (i.roomName === room) {
-          i.users.push(userSocket);
-          users = i.users;
-          console.log("adda name");
-        }
-      }
-
-      for (const i of rooms) {
-        if (i.users.length <= 0) {
-          let index = rooms.indexOf(i);
-          console.log(index);
-          rooms.splice(index, 1);
-          console.log("remove empty");
-        }
-      }
-
-      //All available rooms
-      for (const room of rooms) {
-        availableRooms.push(room);
-      }
-
-      console.log("ROOMS:", JSON.stringify(rooms, null, 2));
-
-      io.to(room).emit("room-message", {
-        name,
-        message: "has joined the room",
-      });
-
-      io.to(room).emit("users", users);
-      io.emit("new-rooms", availableRooms);
-    });
-
-    socket.on("chat-message", (message) => {
-      io.to(room).emit("chat-message", { message, name, room });
-    });
-
-    socket.on("disconnect", () => {
-      console.log("User disconnected");
-
-      for (let i of rooms) {
-        if (i.roomName === room) {
-          let index = i.users.indexOf(userSocket);
-          i.users.splice(index, 1);
-        }
-      }
-
-      users = [];
-      for (let i of rooms) {
-        if (i.roomName === room) {
-          users = i.users;
-        }
-      }
-      io.to(room).emit("users", users);
-    });
   });
 });
 
