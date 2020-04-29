@@ -10,7 +10,7 @@ const Join = () => {
     <div className="joinOuterContainer">
       <div className="joinInnerContainer">
         <div className="inputContainer">
-          <h1 className="heading">Join</h1>
+          <h1 className="heading">Enter name...</h1>
           <div>
             <input
               type="text"
@@ -23,7 +23,7 @@ const Join = () => {
             to={`/chat?name=${name}&room=${"lobby"}`}
             onClick={(event) => (!name ? event.preventDefault() : null)}
           >
-            <button className="button mt-20" type="submit">
+            <button className="button" type="submit">
               Sign In
             </button>
           </Link>

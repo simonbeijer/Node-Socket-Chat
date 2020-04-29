@@ -83,6 +83,7 @@ io.on("connection", (socket) => {
   socket.on("join", ({ name, room, id, password }) => {
     userSocket = { name, userId: createId() };
 
+    //Create room if not exist, otherwise add user to room.
     if (rooms.length <= 0) {
       rooms.push({
         roomName: room,
@@ -114,8 +115,7 @@ io.on("connection", (socket) => {
       }
     }
 
-    // leave all other rooms first!
-
+    // Leave all other rooms first!
     for (const roomx of rooms) {
       socket.leave(roomx.roomName, () => {
         for (const user of roomx.users) {
@@ -129,6 +129,7 @@ io.on("connection", (socket) => {
       });
     }
 
+    //Join room
     socket.join(room, () => {
       availableRooms = [];
 
@@ -149,11 +150,13 @@ io.on("connection", (socket) => {
         }
       }
 
+      //All available rooms
       for (const room of rooms) {
         availableRooms.push(room);
       }
 
       console.log("ROOMS:", JSON.stringify(rooms, null, 2));
+
       io.to(room).emit("room-message", {
         name,
         message: "has joined the room",
@@ -164,7 +167,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("chat-message", (message) => {
-      io.to(room).emit("chat-message", { message, name });
+      io.to(room).emit("chat-message", { message, name, room });
     });
 
     socket.on("disconnect", () => {

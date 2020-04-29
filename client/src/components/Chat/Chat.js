@@ -88,9 +88,12 @@ const Chat = ({ location }) => {
       <div className="chatContainer">
         <h1 className="chatHeading">Chat</h1>
         <ul className="chatMessages">
-          {messages.map((message) => (
-            <li key={key()}>{message.name + ": " + message.message}</li>
-          ))}
+          {messages.map(
+            (message) =>
+              message.room === room && (
+                <li key={key()}>{`${message.name}:  ${message.message}`}</li>
+              )
+          )}
         </ul>
 
         <div className="chatInputContainer">
