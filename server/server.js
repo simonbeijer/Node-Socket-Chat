@@ -167,7 +167,7 @@ io.on("connection", (socket) => {
           if(message === "/fed19") {
             io.to(room).emit("chat-message", { message, name, room, img: "https://media.giphy.com/media/W1VdPHo8Ft3Es/200w_d.gif" });
           } else if(message === "/dota") {
-            io.to(room).emit("chat-message", { message, name, room, img: "https://media.giphy.com/media/50osJfiY106dO/giphy.gif" });
+            io.to(room).emit("chat-message", { message, name, room, img: "https://media.giphy.com/media/50osJfiY106dO/200w_d.gif" });
           } else {
             io.to(room).emit("chat-message", { message, name, room, img: "" });
           }

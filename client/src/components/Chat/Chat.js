@@ -131,6 +131,7 @@ const Chat = ({ location }) => {
                 message.room === room && (
                   <>
                   <li key={key()}>{`${message.name}:  ${message.message}`}
+                  <br/>
                   <img src={message.img} />
                   </li>
                   </>
