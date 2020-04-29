@@ -166,6 +166,14 @@ io.on("connection", (socket) => {
         io.to(room).emit("chat-message", { message, name, room });
       });
 
+      socket.on('typing', (data) => {
+        if(data.typing == true) {
+          io.emit('display', data)
+        } else {
+          io.emit('display', data)
+        }
+      })
+
       socket.on("disconnect", () => {
         console.log("User disconnected");
 
