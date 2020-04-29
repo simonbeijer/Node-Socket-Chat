@@ -22,7 +22,6 @@ const Chat = ({ location }) => {
   const [unlockedRooms, setUnlockedRooms] = useState([]);
   const [typing, setTyping] = useState([]);
 
-
   useEffect(() => {
     const { name, room } = queryString.parse(location.search);
 
@@ -88,7 +87,7 @@ const Chat = ({ location }) => {
 
   useEffect(() => {
     socket.on("display", (data) => {
-      setTyping(data)
+      setTyping(data);
     });
   });
 
@@ -111,17 +110,13 @@ const Chat = ({ location }) => {
     socket.emit("typing", {
       user: name,
       typing: false,
-      room: room
-    })
-
+      room: room,
+    });
   }
 
   return (
     <div className="mainContainer">
       <div className="chatContainer">
-        <h1 className="chatHeading">Chat</h1>
-        {typing.typing == true ? 
-        <p>{typing.user + " skriver"}</p> : <p></p>}
         <ul className="chatMessages">
           {wrongPassword ? (
             <p>WRONG PASSWORD</p>
@@ -130,15 +125,34 @@ const Chat = ({ location }) => {
               (message) =>
                 message.room === room && (
                   <>
-                  <li key={key()}>{`${message.name}:  ${message.message}`}
-                  <br/>
-                  <img src={message.img} />
-                  </li>
+                    <li
+                      style={{
+                        alignSelf: `${
+                          message.name === name ? "flex-start" : "flex-end"
+                        }`,
+                      }}
+                      key={key()}
+                    >
+                      <p className="chatName">{message.name}</p>
+                      <p
+                        className="chatMessage"
+                        style={{
+                          backgroundColor: `${
+                            message.name === name
+                              ? "rgba(150,150,150,0.5)"
+                              : "rgba(226, 97, 97, 0.8)"
+                          }`,
+                        }}
+                      >
+                        {message.message}
+                      </p>
+                      <br />
+                      <img src={message.img} />
+                    </li>
                   </>
-                  )
-                  
-                  )
-                  )}
+                )
+            )
+          )}
         </ul>
 
         <div className="chatInputContainer">
@@ -146,26 +160,37 @@ const Chat = ({ location }) => {
             className="chatInput"
             value={clearInput()}
             onChange={(event) => {
-              setInputValue(event.target.value); 
-              if(event.target.value.length > 0) {
+              setInputValue(event.target.value);
+              if (event.target.value.length > 0) {
                 socket.emit("typing", {
                   user: name,
                   typing: true,
-                  room: room
-                })
+                  room: room,
+                });
               } else {
                 socket.emit("typing", {
                   user: name,
                   typing: false,
-                  room: room
-                })
-              }}}
+                  room: room,
+                });
+              }
+            }}
             type="text"
           />
-          <button className="chatButton" 
-          onClick={() => {sendMessage(); test()}}>
+          <button
+            className="chatButton"
+            onClick={() => {
+              sendMessage();
+              test();
+            }}
+          >
             Send
           </button>
+          {typing.typing == true ? (
+            <p>{typing.user + " skriver..."}</p>
+          ) : (
+            <p></p>
+          )}
         </div>
       </div>
       <div className="roomContainer">
@@ -188,11 +213,22 @@ const Chat = ({ location }) => {
               />
             )}
           </div>
-          <button onClick={() => setShowAddRoom(!showAddRoom)}>ADD ROOM</button>
+          <button
+            className="addRoomBtn"
+            onClick={() => setShowAddRoom(!showAddRoom)}
+          >
+            ADD ROOM
+          </button>
         </div>
         <div className="roomname">
-          <div>Roomname: {room}</div>
+          <h2 style={{ color: "lightgray" }}>
+            You are in room:{" "}
+            <span style={{ color: "rgba(226, 97, 97, 0.8)" }}>{room}</span>
+          </h2>
           <div>
+            <h4 style={{ color: "black", marginTop: "1rem" }}>
+              People in this room:
+            </h4>
             {usersInRoom.map((user) => (
               <p key={key()}>{user.name}</p>
             ))}

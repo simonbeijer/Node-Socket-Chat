@@ -17,14 +17,14 @@
 
 .chatContainer {
   grid-area: cc;
-  background-color: rgba(0, 0, 0, 0.164);
+  background-color: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
   height: 100%;
   width: 100%;
   display: grid;
   grid-template-columns: 5% 10% 10% 10% 20% 10% 10% 10% 10% 5%;
   grid-template-rows: 10% 5% 10% 10% 20% 10% 10% 10% 5% 10%;
   grid-template-areas:
-    " . . . . ch ch . . . . "
     " . . . . . . . . . . "
     " . cm cm cm cm cm cm cm cm  . "
     " . cm cm cm cm cm cm cm cm  . "
@@ -32,42 +32,73 @@
     " . cm cm cm cm cm cm cm cm  . "
     " . cm cm cm cm cm cm cm cm  . "
     " . cm cm cm cm cm cm cm cm  . "
-    " . . . . . . . . . . "
-    " . ci ci ci ci ci ci ci ci . ";
-}
-
-.chatHeading {
-  grid-area: ch;
-  display: flex;
-  justify-content: center;
+    " . cm cm cm cm cm cm cm cm  . "
+    " . ci ci ci ci ci ci ci ci . "
+    " . . . . . . . . . . ";
 }
 
 .chatMessages {
-  overflow: scroll;
   grid-area: cm;
-  background-color: rgba(0, 0, 0, 0.192);
+  background-color: rgba(0, 0, 0, 0.425);
   overflow-y: scroll;
-  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 5rem;
+}
+
+.chatMessages .chatMessage {
+  backdrop-filter: blur(5px);
+
+  border-radius: 10px;
+  display: flex;
+  max-width: 15rem;
+  padding: 1rem;
 }
 
 .chatInputContainer {
   grid-area: ci;
+  margin-top: 0.5rem;
 }
 
 .chatInput {
   width: 80%;
   height: 100%;
   margin-right: 0.2rem;
+  background-color: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
+  font-size: 1.3rem;
+  text-indent: 5px;
+  border: 2px solid #181818;
+  border-radius: 4px;
+  height: 3rem;
+}
+
+.chatInput:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.877);
 }
 
 .chatButton {
-  /* width: 20%; */
-  height: 100%;
+  font-size: 1.2rem;
+  background-color: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
+  border: 2px solid #181818;
+  height: 3.3rem;
+  width: 18%;
+  font-family: "Abel", sans-serif;
+  border-radius: 4px;
+  font-weight: bold;
 }
 
+.chatButton:focus {
+  outline: none;
+  border-color: #222222;
+  box-shadow: 0 0 10px #fd3c3c;
+}
 .roomContainer {
   grid-area: rc;
-  background-color: rgba(0, 0, 0, 0.164);
+  background-color: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
 }
 
 .roomContainer {
@@ -95,4 +126,23 @@
 
 ul {
   list-style-type: none;
+}
+
+.addRoomBtn {
+  font-size: 1.2rem;
+  background-color: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
+  border: 2px solid #181818;
+  height: 3.3rem;
+  width: 50%;
+  font-family: "Abel", sans-serif;
+  border-radius: 4px;
+  font-weight: bold;
+  margin: 0 auto;
+}
+
+.addRoomBtn:focus {
+  outline: none;
+  border-color: #222222;
+  box-shadow: 0 0 10px #fd3c3c;
 }
