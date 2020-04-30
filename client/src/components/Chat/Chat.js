@@ -43,6 +43,7 @@ const Chat = ({ location }) => {
     setShowCheckPassword(false);
     setCorrectPassword(false);
     setShowAddRoom(false);
+    setPassword(null);
 
     return () => {
       socket.emit("disconnect");
