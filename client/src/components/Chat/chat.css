@@ -25,7 +25,7 @@
   grid-template-columns: 5% 10% 10% 10% 20% 10% 10% 10% 10% 5%;
   grid-template-rows: 10% 5% 10% 10% 20% 10% 10% 10% 5% 10%;
   grid-template-areas:
-    " . . . . . . . . . . "
+    " . . . . ch ch . . . . "
     " . cm cm cm cm cm cm cm cm  . "
     " . cm cm cm cm cm cm cm cm  . "
     " . cm cm cm cm cm cm cm cm  . "
@@ -35,6 +35,13 @@
     " . cm cm cm cm cm cm cm cm  . "
     " . ci ci ci ci ci ci ci ci . "
     " . . . . . . . . . . ";
+}
+
+.chatHeader {
+  grid-area: ch;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .chatMessages {
@@ -95,13 +102,12 @@
   border-color: #222222;
   box-shadow: 0 0 10px #fd3c3c;
 }
+
 .roomContainer {
   grid-area: rc;
   background-color: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(20px);
-}
-
-.roomContainer {
+  position: relative;
   height: 100%;
   width: 100%;
   display: grid;
@@ -119,7 +125,7 @@
   flex-direction: column;
 }
 
-.roomname {
+.addRoomBtn {
   grid-area: rn;
   margin-bottom: 0.3rem;
 }
@@ -145,4 +151,16 @@ ul {
   outline: none;
   border-color: #222222;
   box-shadow: 0 0 10px #fd3c3c;
+}
+
+.addRoom {
+  position: absolute;
+  bottom: 10rem;
+  left: 40px;
+}
+
+.showPassword {
+  position: absolute;
+  width: 100%;
+  top: 60%;
 }

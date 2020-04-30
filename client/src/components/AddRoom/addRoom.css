@@ -1,0 +1,16 @@
+.addOuterContainer {
+  width: 100%;
+}
+
+.inputContainer {
+  margin: 0 auto;
+}
+
+.addOuterContainer input {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  border: none;
+  height: 3em;
+  width: 90%;
+  text-indent: 5px;
+}

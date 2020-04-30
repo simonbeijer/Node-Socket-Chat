@@ -5,22 +5,25 @@ import Room from "../Room/Room";
 import AddRoom from "../AddRoom/AddRoom";
 
 import "./chat.css";
+import CheckPassword from "../CheckPassword/CheckPassword";
 
 let socket;
 
 const Chat = ({ location }) => {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
-  const [usersInRoom, setUsersInRoom] = useState([]);
+
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [showAddRoom, setShowAddRoom] = useState(false);
   const [password, setPassword] = useState(null);
-  const [wrongPassword, setWrongPassword] = useState(false);
+  const [correctPassword, setCorrectPassword] = useState(false);
   const ENDPOINT = "localhost:5000";
   const [lockedRooms, setLockedRooms] = useState([]);
   const [unlockedRooms, setUnlockedRooms] = useState([]);
   const [typing, setTyping] = useState([]);
+  const [showCheckPassword, setShowCheckPassword] = useState(false);
+  const [passwordRoom, setNewRoomPassword] = useState("");
 
   useEffect(() => {
     const { name, room } = queryString.parse(location.search);
@@ -36,6 +39,10 @@ const Chat = ({ location }) => {
       id: Math.floor(Math.random() * 10000),
       password,
     });
+
+    setShowCheckPassword(false);
+    setCorrectPassword(false);
+    setShowAddRoom(false);
 
     return () => {
       socket.emit("disconnect");
@@ -68,20 +75,15 @@ const Chat = ({ location }) => {
   });
 
   useEffect(() => {
-    socket.on("users", (users) => {
-      setUsersInRoom(users);
-    });
-  });
-
-  useEffect(() => {
     socket.on("wrong-password", () => {
-      setWrongPassword(true);
+      console.log("inne!");
+      setCorrectPassword(false);
     });
   });
-
   useEffect(() => {
     socket.on("correct-password", () => {
-      setWrongPassword(false);
+      console.log("inne i correct password!");
+      setCorrectPassword(true);
     });
   });
 
@@ -114,44 +116,46 @@ const Chat = ({ location }) => {
     });
   }
 
+  function testPassword() {
+    socket.emit("test-password", {
+      name: name,
+      room: passwordRoom,
+      password: password,
+    });
+  }
+
   return (
     <div className="mainContainer">
       <div className="chatContainer">
+        <h1 className="chatHeader">{room}</h1>
         <ul className="chatMessages">
-          {wrongPassword ? (
-            <p>WRONG PASSWORD</p>
-          ) : (
-            messages.map(
-              (message) =>
-                message.room === room && (
-                  <>
-                    <li
-                      style={{
-                        alignSelf: `${
-                          message.name === name ? "flex-start" : "flex-end"
-                        }`,
-                      }}
-                      key={key()}
-                    >
-                      <p className="chatName">{message.name}</p>
-                      <p
-                        className="chatMessage"
-                        style={{
-                          backgroundColor: `${
-                            message.name === name
-                              ? "rgba(150,150,150,0.5)"
-                              : "rgba(226, 97, 97, 0.8)"
-                          }`,
-                        }}
-                      >
-                        {message.message}
-                      </p>
-                      <br />
-                      <img src={message.img} />
-                    </li>
-                  </>
-                )
-            )
+          {messages.map(
+            (message) =>
+              message.room === room && (
+                <li
+                  key={key()}
+                  style={{
+                    alignSelf: `${
+                      message.name === name ? "flex-start" : "flex-end"
+                    }`,
+                  }}
+                >
+                  <p className="chatName">{message.name}</p>
+                  <p
+                    className="chatMessage"
+                    style={{
+                      backgroundColor: `${
+                        message.name === name
+                          ? "rgba(150,150,150,0.5)"
+                          : "rgba(226, 97, 97, 0.8)"
+                      }`,
+                    }}
+                  >
+                    {message.message}
+                  </p>
+                  <img alt="" src={message.img} />
+                </li>
+              )
           )}
         </ul>
 
@@ -186,11 +190,7 @@ const Chat = ({ location }) => {
           >
             Send
           </button>
-          {typing.typing == true ? (
-            <p>{typing.user + " skriver..."}</p>
-          ) : (
-            <p></p>
-          )}
+          {typing.typing ? <p>{typing.user + " skriver..."}</p> : <p></p>}
         </div>
       </div>
       <div className="roomContainer">
@@ -201,38 +201,38 @@ const Chat = ({ location }) => {
             lockedRooms={lockedRooms}
             unlockedRooms={unlockedRooms}
             setPassword={setPassword}
-            password={wrongPassword}
+            password={correctPassword}
+            testPassword={testPassword}
+            setShowCheckPassword={setShowCheckPassword}
+            setNewRoomPassword={setNewRoomPassword}
           />
-          <div>
-            {showAddRoom && (
-              <AddRoom
-                name={name}
-                room={room}
-                setRoom={setRoom}
-                setPassword={setPassword}
-              />
-            )}
-          </div>
-          <button
-            className="addRoomBtn"
-            onClick={() => setShowAddRoom(!showAddRoom)}
-          >
-            ADD ROOM
-          </button>
         </div>
-        <div className="roomname">
-          <h2 style={{ color: "lightgray" }}>
-            You are in room:{" "}
-            <span style={{ color: "rgba(226, 97, 97, 0.8)" }}>{room}</span>
-          </h2>
-          <div>
-            <h4 style={{ color: "black", marginTop: "1rem" }}>
-              People in this room:
-            </h4>
-            {usersInRoom.map((user) => (
-              <p key={key()}>{user.name}</p>
-            ))}
-          </div>
+        <button
+          className="addRoomBtn"
+          onClick={() => setShowAddRoom(!showAddRoom)}
+        >
+          ADD ROOM
+        </button>
+        <div className="addRoom">
+          {showAddRoom && (
+            <AddRoom
+              name={name}
+              room={room}
+              setRoom={setRoom}
+              setPassword={setPassword}
+            />
+          )}
+        </div>
+        <div className="showPassword">
+          {showCheckPassword && (
+            <CheckPassword
+              setPassword={setPassword}
+              passwordRoom={passwordRoom}
+              testPassword={testPassword}
+              correctPassword={correctPassword}
+              name={name}
+            />
+          )}
         </div>
       </div>
     </div>

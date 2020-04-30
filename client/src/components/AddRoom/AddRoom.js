@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 import "./addRoom.css";
@@ -8,7 +8,6 @@ const AddRoom = (props) => {
     <div className="addOuterContainer">
       <div className="addInnerContainer">
         <div className="inputContainer">
-          <h1 className="heading">AddRoom</h1>
           <div>
             <input
               type="text"

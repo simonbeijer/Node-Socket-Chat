@@ -1,49 +1,38 @@
-import React, { useState } from "react";
+import React from "react";
 import "./room.css";
 import { Link } from "react-router-dom";
 
 const Room = (props) => {
-  // const [pass, setPass] = useState(false);
-
-  const test = () => {
-    props.setPassword(prompt("This room requires a password"));
-  };
-  console.log(props.unlockedRooms);
-  console.log(props.lockedRooms);
   const roomArray = props.unlockedRooms.map((room) => (
-    <>
+    <div key={room.id}>
       <Link key={room.id} to={`/chat?name=${props.name}&room=${room.roomName}`}>
         <li>
           <h3>{room.roomName}</h3>
         </li>
       </Link>
-      {room.users.map((user) => (
-        <p>{user.name}</p>
+      {room.users.map((user, index) => (
+        <p key={index}>{user.name}</p>
       ))}
-    </>
+    </div>
   ));
 
   const roomArrayLocked = props.lockedRooms.map((room) => (
-    <>
-      <Link
-        onClick={test}
-        key={room.id}
-        to={
-          props.password
-            ? `/chat?name=${props.name}&room=${room.roomName}`
-            : `/chat?name=${props.name}&room=lobby`
-        }
-      >
-        <li>
-          <h3>
-            {room.roomName} <i class="fas fa-lock"></i>
-          </h3>
-        </li>
-      </Link>
-      {room.users.map((user) => (
-        <p>{user.name}</p>
+    <div
+      onClick={() => {
+        props.setNewRoomPassword(room.roomName);
+        props.setShowCheckPassword(true);
+      }}
+      key={room.id}
+    >
+      <li>
+        <h3>
+          {room.roomName} <i className="fas fa-lock"></i>
+        </h3>
+      </li>
+      {room.users.map((user, index) => (
+        <p key={index}>{user.name}</p>
       ))}
-    </>
+    </div>
   ));
 
   return (

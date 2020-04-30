@@ -57,6 +57,16 @@ io.on("connection", (socket) => {
 
   let userSocket = [];
 
+  socket.on("test-password", (data) => {
+    let roomIndex = rooms.findIndex((roomx) => roomx.roomName == data.room);
+    let myRoom = rooms.slice(roomIndex);
+    if (myRoom[0].password == data.password) {
+      socket.emit("correct-password");
+    } else {
+      socket.emit("wrong-password");
+    }
+  });
+
   socket.on("join", ({ name, room, id, password }) => {
     userSocket = { name, userId: createId() };
 
@@ -91,117 +101,123 @@ io.on("connection", (socket) => {
         });
       }
     }
-    console.log("ROOMS:", JSON.stringify(rooms, null, 2));
-    console.log(room);
 
-    let roomIndex = rooms.findIndex((roomx) => roomx.roomName == room);
-    console.log("roomindex", roomIndex);
-    let myRoom = rooms.slice(roomIndex);
+    // Leave all other rooms first!
+    for (const roomx of rooms) {
+      socket.leave(roomx.roomName, () => {
+        for (const user of roomx.users) {
+          if (user.name === userSocket.name) {
+            let index = roomx.users.indexOf(user);
 
-    console.log("myroom", myRoom);
-    console.log("password", password);
-
-    if (myRoom[0].password == password) {
-      io.emit("correct-password", "You have entered an valid password");
-      // Leave all other rooms first!
-      for (const roomx of rooms) {
-        socket.leave(roomx.roomName, () => {
-          for (const user of roomx.users) {
-            if (user.name === userSocket.name) {
-              let index = roomx.users.indexOf(user);
-
-              roomx.users.splice(index, 1);
-              io.to(roomx.roomName).emit("users", roomx.users);
-            }
+            roomx.users.splice(index, 1);
+            io.to(roomx.roomName).emit("users", roomx.users);
           }
-        });
+        }
+      });
+    }
+
+    //Join room
+    socket.join(room, () => {
+      unlockedRoomsX = [];
+      lockedRoomsX = [];
+      for (const i of rooms) {
+        if (i.roomName === room) {
+          i.users.push(userSocket);
+          users = i.users;
+        }
       }
 
-      //Join room
-      socket.join(room, () => {
-        unlockedRoomsX = [];
-        lockedRoomsX = [];
-        for (const i of rooms) {
-          if (i.roomName === room) {
-            i.users.push(userSocket);
-            users = i.users;
-          }
+      for (const i of rooms) {
+        if (i.users.length <= 0) {
+          let index = rooms.indexOf(i);
+
+          rooms.splice(index, 1);
         }
+      }
 
-        for (const i of rooms) {
-          if (i.users.length <= 0) {
-            let index = rooms.indexOf(i);
-
-            rooms.splice(index, 1);
-          }
+      //All locked and unlocked rooms
+      for (const room of rooms) {
+        if (!room.password) {
+          unlockedRoomsX.push(room);
         }
-
-        //All locked and unlocked rooms
-
-        for (const room of rooms) {
-          if (!room.password) {
-            unlockedRoomsX.push(room);
-          }
+      }
+      for (const room of rooms) {
+        if (room.password) {
+          lockedRoomsX.push(room);
         }
-        for (const room of rooms) {
-          if (room.password) {
-            lockedRoomsX.push(room);
-          }
-        }
-        console.log(unlockedRoomsX);
-        console.log(lockedRoomsX);
+      }
 
-        console.log("ROOMS:", JSON.stringify(rooms, null, 2));
+      io.to(room).emit("room-message", {
+        name,
+        message: "has joined the room",
+      });
 
-        io.to(room).emit("room-message", {
+      io.to(room).emit("users", users);
+      io.emit("new-rooms", { lockedRoomsX, unlockedRoomsX });
+    });
+
+    console.log("ROOMS:", JSON.stringify(rooms, null, 2));
+
+    socket.on("chat-message", (message) => {
+      if (message === "/fed19") {
+        io.to(room).emit("chat-message", {
+          message,
           name,
-          message: "has joined the room",
+          room,
+          img: "https://media.giphy.com/media/W1VdPHo8Ft3Es/200w_d.gif",
         });
+      } else if (message === "/dota") {
+        io.to(room).emit("chat-message", {
+          message,
+          name,
+          room,
+          img: "https://media.giphy.com/media/5NTfjgFn3vjWg/200w_d.gif",
+        });
+      } else if (message === "/wow") {
+        io.to(room).emit("chat-message", {
+          message,
+          name,
+          room,
+          img: "https://media.giphy.com/media/8vHSt3vau0pFh0ZemM/200w_d.gif",
+        });
+      } else if (message === "/garrosh") {
+        io.to(room).emit("chat-message", {
+          message,
+          name,
+          room,
+          img: "https://media.giphy.com/media/1oEvw29Nv7GnkhDML5/200w_d.gif",
+        });
+      } else {
+        io.to(room).emit("chat-message", { message, name, room, img: "" });
+      }
+    });
 
-        io.to(room).emit("users", users);
-        io.emit("new-rooms", { lockedRoomsX, unlockedRoomsX });
-      });
+    socket.on("typing", (data) => {
+      if (data.typing == true) {
+        io.to(room).emit("display", data);
+      } else {
+        io.to(room).emit("display", data);
+      }
+    });
 
-      socket.on("chat-message", (message) => {
-        console.log(message)
-          if(message === "/fed19") {
-            io.to(room).emit("chat-message", { message, name, room, img: "https://media.giphy.com/media/W1VdPHo8Ft3Es/200w_d.gif" });
-          } else if(message === "/dota") {
-            io.to(room).emit("chat-message", { message, name, room, img: "https://media.giphy.com/media/5NTfjgFn3vjWg/200w_d.gif" });
-          } else {
-            io.to(room).emit("chat-message", { message, name, room, img: "" });
-          }
-      });
+    socket.on("disconnect", () => {
+      console.log("User disconnected");
 
-      socket.on('typing', (data) => {
-        if(data.typing == true) {
-          io.to(room).emit('display', data)
-        } else {
-          io.to(room).emit('display', data)
+      for (let i of rooms) {
+        if (i.roomName === room) {
+          let index = i.users.indexOf(userSocket);
+          i.users.splice(index, 1);
         }
-      })
+      }
 
-      socket.on("disconnect", () => {
-        console.log("User disconnected");
-
-        for (let i of rooms) {
-          if (i.roomName === room) {
-            let index = i.users.indexOf(userSocket);
-            i.users.splice(index, 1);
-          }
+      users = [];
+      for (let i of rooms) {
+        if (i.roomName === room) {
+          users = i.users;
         }
-
-        users = [];
-        for (let i of rooms) {
-          if (i.roomName === room) {
-            users = i.users;
-          }
-        }
-        io.to(room).emit("users", users);
-      });
-    } else {
-      io.emit("wrong-password", "You have entered an invalid password");
-    }
+      }
+      io.to(room).emit("users", users);
+    });
   });
 });
 
