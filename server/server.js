@@ -1,32 +1,3 @@
-// const chalk = require('chalk')
-
-// const router = require("./router");
-
-// const app = express();
-// const server = http.createServer(app);
-// const io = socketIO(server);
-
-// server.listen(serverPort.port, () =>
-//     portRunning()
-// );
-
-// // Styled cli
-// function portRunning() {
-//     let str;
-//     str = "+------------------------+----------+\n";
-//     str += "|  Is server running?    |  Port    |\n";
-//     str += "|------------------------|----------|\n";
-//     for (const row of serverPort) {
-//         str += "| ";
-//         str += chalk.green(row.running.padEnd(23));
-//         str += "| ";
-//         str += chalk.blue(row.port.toString().padEnd(8));
-//         str += " |\n";
-//     }
-//     str += "+------------------------+----------+\n";
-//     console.log(chalk.bgBlack(str))
-// }
-
 const express = require("express");
 const socketIO = require("socket.io");
 const http = require("http");
